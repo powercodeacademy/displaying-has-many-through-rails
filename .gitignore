@@ -1,18 +1,93 @@
-db/*.sqlite3
-db/*.sqlite3-journal
-tmp/*
-log/*
+# Ignore bundler config.
+/.bundle/
+
+# Ignore log files and temp files.
+/log/*
 !/log/.keep
-config/master.key
-config/credentials.yml.enc
-node_modules/
-.byebug_history
+/tmp/*
+!/tmp/.keep
+
+# Ignore database files.
+/db/*.sqlite3*
+/db/*.sqlite3-journal
+/db/*.sqlite3-shm
+/db/*.sqlite3-wal
+/db/schema.rb
+/db/seeds.rb
+
+# Ignore system files.
+*.swp
+*.swo
+*.bak
+*.tmp
+*.DS_Store
+Thumbs.db
+
+# Ignore environment files.
 .env
 .env.*
-coverage/
-public/assets/
-.bundle/
+.byebug_history
 
+# Ignore node modules.
+node_modules/
+
+# Ignore coverage reports.
+coverage/
+spec/reports/
+test/reports/
+
+# Ignore asset files.
+/public/assets/
+/public/packs/
+/public/packs-test/
+/public/packs-dev/
+/public/packs-production/
+
+# Ignore credentials and secrets.
 /config/master.key
-log/development.log
-db/*.sqlite3*
+/config/credentials.yml.enc
+
+# Ignore yarn and npm files.
+yarn-error.log
+yarn-debug.log*
+npm-debug.log*
+
+# Ignore IDE/editor files.
+.idea/
+.vscode/
+*.iml
+
+# Ignore other Rails files.
+/storage/*
+!/storage/.keep
+
+# Ignore Capistrano deploy files.
+capistrano/
+.rbenv-vars
+
+# Ignore Sprockets cache.
+/tmp/cache/assets/
+
+# Ignore pid files.
+/tmp/pids/*
+!/tmp/pids/.keep
+
+# Ignore uploaded files.
+/public/system/*
+!/public/system/.keep
+
+# Ignore spring files.
+/tmp/spring/*
+!/tmp/spring/.keep
+
+# Ignore Redis dump files.
+dump.rdb
+
+# Ignore Docker files.
+docker-compose.override.yml
+
+# Ignore test coverage.
+/coverage/
+
+# Ignore custom files.
+*.orig

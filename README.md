@@ -9,42 +9,27 @@
 
 ## Overview
 
-We've seen how we can use simple associations to display data to our users in Rails, but what about more complex relationships? Lucky for us, the interface for displaying this type of data is just as easy thanks to Active Record and `has_many, through`.
+You can use simple associations to display data to users in Rails, but more complex relationships are just as easy thanks to Active Record and `has_many, through`.
 
 ## Lesson
 
 ### has_many, through
 
-Let's say you're making a blog and want to give users the ability to sign up and comment on your posts. What's the relationship between a post and a comment? If you said, "A comment belongs to a post, and a post has many comments," give yourself a pat on the back!
+Suppose you're making a blog and want users to sign up and comment on posts. A comment belongs to a post, and a post has many comments. A user has many comments, and a comment belongs to a user. This is straightforward.
 
-What about the relationship between a user and a comment? Again, a user has many comments, and a comment belongs to the user. So far, this is pretty straightforward.
+The relationship between a user and the posts they've commented on is many-to-many. We set up a many-to-many relationship using a join table. In this case, `comments` acts as the join table. Any table with two foreign keys can be a join table. A row in the `comments` table might look like this:
 
-Things get slightly more complicated when we talk about the relationship between a user and the posts that the user has commented on. How would you describe that relationship? Well, a user obviously can comment on many posts, and a post has comments from many users. Yep, this is a many to many relationship. We can set up a many-to-many relationship using a join table. In this case, `comments` will act as our join table. Any table that contains two foreign keys can be thought of as a join table. A row in our `comments` table will look something like this:
+| id | content           | post_id | user_id |
+|----|-------------------|---------|---------|
+| 1  | "I loved this post!" | 5       | 3       |
 
-<table border="1" cellpadding="4" cellspacing="0">
-  <tr>
-    <td>id</td>
-    <td>content</td>
-    <td>post_id</td>
-    <td>user_id</td>
-  </tr>
-  
-  <tr>
-    <td>1</td>
-    <td>"I loved this post!"</td>
-    <td>5</td>
-    <td>3</td>
-  </tr>
-</table>
+This shows that the `Comment` with ID `1` was created by the `User` with ID `3` for the `Post` with ID `5`. You can determine all posts a user has commented on and all users who commented on any post. You can call `@user.posts` to get all those posts.
 
-For this instance, we know that the `Comment` with an ID of `1` was created by the `User` with an ID of `3` for the `Post` with an ID of `5`. We have all of the information we need to determine all of the posts that a particular user has commented on as well as all of the users who commented on any post. When we're done, we'll be able to simply call `@user.posts` to get a collection of all of those posts.
-
-Let's set this up. First, we'll need migrations for `comments`, `posts`, and `users` tables. We've included migrations and models in this repo, so you can follow along.
+To set this up, you'll need migrations for `comments`, `posts`, and `users` tables. Migrations and models are included in this repo.
 
 ```ruby
-# db/migrate/xxx_create_posts
-
-class CreatePosts < ActiveRecord::Migration
+# db/migrate/xxx_create_posts.rb
+class CreatePosts < ActiveRecord::Migration[7.1]
   def change
     create_table :posts do |t|
       t.string :title
@@ -56,10 +41,9 @@ end
 ```
 
 ```ruby
-# db/migrate/xxx_create_users
-
-class CreateUsers < ActiveRecord::Migration
-   def change
+# db/migrate/xxx_create_users.rb
+class CreateUsers < ActiveRecord::Migration[7.1]
+  def change
     create_table :users do |t|
       t.string :username
       t.string :email
@@ -70,9 +54,8 @@ end
 ```
 
 ```ruby
-# db/migrate/xxx_create_comments
-
-class CreateComments < ActiveRecord::Migration
+# db/migrate/xxx_create_comments.rb
+class CreateComments < ActiveRecord::Migration[7.1]
   def change
     create_table :comments do |t|
       t.string :content
@@ -84,32 +67,22 @@ class CreateComments < ActiveRecord::Migration
 end
 ```
 
-In our models, we have the following:
+### Models
 
 ```ruby
-# app/models/post.rb
-
-class Post < ActiveRecord::Base
-  has_many :comments
-  has_many :users, through: :comments
-end
-```
-
-```ruby
-# app/models/user.rb
-
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   has_many :comments
   has_many :posts, through: :comments
 end
-```
 
-```ruby
-# app/models/comment.rb
+class Post < ApplicationRecord
+  has_many :comments
+  has_many :users, through: :comments
+end
 
-class Comment < ActiveRecord::Base
-  belongs_to :user
+class Comment < ApplicationRecord
   belongs_to :post
+  belongs_to :user
 end
 ```
 
@@ -150,7 +123,7 @@ Comments:
 
 This is the same as we've done before –– we're simply looking at data associated with posts and comments. Calling `comment.user` returns for us the `User` object associated with that comment. We can then call any method that our user responds to, such as `username`.
 
-## Adding Posts to Our Users
+### Adding Posts to Our Users
 
 Let's say that on our `User#show` page we want our users to see a list of all of the posts that they've commented on. What would that look like?
 
